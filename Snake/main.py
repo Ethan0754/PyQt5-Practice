@@ -33,8 +33,9 @@ green_background = Background(QtCore.Qt.GlobalColor.green)
 dark_green_background = Background(QtCore.Qt.GlobalColor.darkGreen)
 alternate = 1
 for row in range(10):
-    for col in range(10):
-        layout.setRowStretch(row, 1)
+    layout.setRowStretch(row, 1)
+    for col in range(5):
+
         layout.setColumnStretch(col, 1)
         if (col+alternate)%2 == 0:
             colored_widget = QWidget()
