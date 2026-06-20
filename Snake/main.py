@@ -1,61 +1,48 @@
 import sys
 
-from PyQt5 import QtCore
-from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QGridLayout, QWidget, QSizePolicy
-
-from Snake.Background import Background
-from Snake.SnakeNode import SnakeNode
+from PyQt5 import QtGui
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPainter, QPen, QColor, QBrush
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QLabel, QSizePolicy
 
 
-class MainWindow(QWidget):
-
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Snake")
+        self.setMinimumSize(800, 400)
 
-        self.setWindowTitle("First Program")
+        self.label = QLabel(self)
 
-        self.showMaximized()
-        # self.setMinimumSize(QSize(100, 100))
-        #self.setMaximumSize(QSize(500, 500))
+        canvas = QtGui.QPixmap(800, 400)
+        canvas.fill(Qt.white)
+        self.label.setPixmap(canvas)
+        self.setCentralWidget(self.label)
 
+        painter = QPainter(self.label.pixmap())
+        painter.setRenderHint(QPainter.Antialiasing)
+        green_brush = QBrush(Qt.green, Qt.SolidPattern)
+        light_green_brush = QBrush(QColor(144, 238, 144), Qt.SolidPattern)
+        painter.setBrush(light_green_brush)
 
-
-app = QApplication(sys.argv)
-
-window = MainWindow()
-window.show()
-
-layout = QGridLayout()
-layout.setSpacing(0)
-
-green_background = Background(QtCore.Qt.GlobalColor.green)
-dark_green_background = Background(QtCore.Qt.GlobalColor.darkGreen)
-alternate = 1
-for row in range(10):
-    layout.setRowStretch(row, 1)
-    for col in range(5):
-
-        layout.setColumnStretch(col, 1)
-        if (col+alternate)%2 == 0:
-            colored_widget = QWidget()
-            colored_widget.setStyleSheet("background-color: green;")
-            layout.addWidget(colored_widget, row, col)
-            alternate = 1
-        else:
-            colored_widget = QWidget()
-            colored_widget.setStyleSheet("background-color:rgb(0,255,0);")
-            layout.addWidget(colored_widget, row, col)
-            alternate = 0
+        color_switch = True
+        for i in range(10):
+            for j in range(10):
+                painter.drawRect(50*j, 50*i, 50, 50)
+                if color_switch:
+                    painter.setBrush(green_brush)
+                else:
+                    painter.setBrush(light_green_brush)
+                color_switch = not color_switch
+            color_switch = not color_switch
+        painter.end()
 
 
 
 
 
-
-snake_node = SnakeNode()
-layout.addWidget(snake_node, 1, 0)
-
-window.setLayout(layout)
-
-app.exec()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    app.exec_()
